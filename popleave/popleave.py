@@ -13,6 +13,7 @@ import sys
 from typing import Any, Optional
 
 # Module imports
+import appdirs
 from docx import Document
 
 
@@ -63,7 +64,11 @@ def init(
     """
 
     if conf_path is None:
-        conf_path = os.path.expanduser(".leave-pop.json")
+        conf_dir = appdirs.user_config_dir('popleave')
+        conf_path = os.path.join(conf_dir, "config.json")
+
+        if not os.path.exists(conf_dir):
+            os.makedirs(conf_dir)
 
     if not os.path.exists(conf_path) or force_init:
 
