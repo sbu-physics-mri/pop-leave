@@ -97,6 +97,7 @@ def get_doc_dict(
         duration: Optional[int | float | datetime.timedelta] = None,
         end_date: Optional[str | datetime.date] = None,
         reason: Optional[str] = None,
+        is_toil: bool = False,
 ) -> dict:
     """Return populated document dictionary
 
@@ -112,6 +113,9 @@ def get_doc_dict(
                 Defaults to None.
         reason (str, optional) : Reason for leave. If None, will prompt
                 the user for a reason for leave.
+        is_toil (bool, optional) : If True, fills the form out as a
+                Time Off In Leu instead of Annual leave.
+                Defaults to False.
 
     Returns:
         doc_dict (dict) : Dictionary of documentation fields.
@@ -146,6 +150,10 @@ def get_doc_dict(
         _format_date(str(datetime.date.today())),
         (0, 0, 2),
     )
+    
+    type_row = 3 if is_toil else 1
+    doc_dict['type'] = ('x', (1, type_row, 1))
+    
     doc_dict['start_date'] = (
         _format_date(str(start_date)),
         (2, 3, 0),
@@ -155,17 +163,20 @@ def get_doc_dict(
         (2, 3, 1),
     )
     doc_dict['duration'] = (duration.days, (2, 3, 2))
-    doc_dict['balance'] = (
-        int(config['remaing_days_leave']) - duration.days,
-        (2, 3, 3),
-    )
+    if is_toil:
+        balance = config['remaing_days_leave']
+    else:
+        balance = int(config['remaing_days_leave']) - duration.days
+    doc_dict['balance'] = (balance, (2, 3, 3))
+        
     doc_dict['reason'] = (str(reason), (3, 0, 0))
 
     return doc_dict
 
 
 def populate_file(
-        doc_dict: dict, template_file: Optional[str] = None
+        doc_dict: dict,
+        template_file: Optional[str] = None,
 ) -> bool:
     """Populate a word template file with annual leave info
 
@@ -174,14 +185,14 @@ def populate_file(
         template_file (str, optional) : Template file to populate.
                 If None, will load the template.docx file associated with
                 the package. Defaults to None.
-
+    
     Returns:
         return_val (bool) : True if successful, False otherwise.
     """
 
     my_package = (
         os.path.splitext(os.path.basename(__file__))[0]
-        if __package__ is None
+        if not __package__
         else __package__
     )
     template_file = (
@@ -201,10 +212,7 @@ def populate_file(
 
     
     new_file_name = f"{initials}_ANNUAL_{startday}.docx"
-    out_dir = "forms"
-    os.makedirs(out_dir, exist_ok=True)
-    
-    doc.save(os.path.join(out_dir, new_file_name))
+    doc.save(new_file_name)
 
     new_config = init(update_balance=int(doc_dict["balance"][0]))
 
@@ -212,13 +220,14 @@ def populate_file(
     
     return True
 
-def main(force_init: bool = False, **kwargs: Any) -> bool:
+
+def main(
+        force_init: bool = False, is_toil: bool = False, **kwargs: Any,
+) -> bool:
     """Main script"""
     
     config = init(force_init=force_init)
-
-    doc_dict = get_doc_dict(config, **kwargs)
-
+    doc_dict = get_doc_dict(config, is_toil=is_toil, **kwargs)
     return populate_file(doc_dict)
 
 
@@ -272,11 +281,19 @@ if __name__ == "__main__":
         help='Reason for leave.',
     )
 
+    parser.add_argument(
+        '-t',
+        '--toil',
+        action='store_true',
+        help='Fills out Time Off In Leu instead of annual leave.',
+    )
+
     args = vars(parser.parse_args())
     force_init = args.pop('init')
+    is_toil = args.pop('toil')
 
     #####################
     # Runs main program #
     #####################
 
-    main(force_init=force_init, **args)
+    main(force_init=force_init, is_toil=is_toil, **args)

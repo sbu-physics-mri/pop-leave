@@ -69,8 +69,8 @@ If you'd rather, you can use commandline arguments.
 A full list of commandline arguments can be found by using the `--help` flag.
 
 ```sh
-usage: popleave [-h] [-i] [-s START_DATE] [-e END_DATE] [-d DURATION]
-                   [-r REASON]
+usage: popleave    [-h] [-i] [-s START_DATE] [-e END_DATE] [-d DURATION]
+                   [-r REASON] [-t]
 
 Populates the leave of absence form with a CLI
 
@@ -85,13 +85,13 @@ options:
                         Duration in days.
   -r REASON, --reason REASON
                         Reason for leave.
+  -t, --toil            Fills out Time Off In Leu instead of annual leave.
 ```
 
-All resulting forms will be stored in the `forms/` directory in the format `INITIALS_ANNUAL_STARTDATE.docx`.
+All resulting forms will be stored in the current directory in the format `INITIALS_ANNUAL_STARTDATE.docx`.
 Thus Samwise Gamgee requesting some leave starting on 1969-12-31 will result in:
 ```
-forms/
-    SG_ANNUAL_31121969.docx
+SG_ANNUAL_31121969.docx
 ```
 
 ## License
