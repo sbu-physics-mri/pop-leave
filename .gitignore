@@ -5,3 +5,4 @@ src/__pycache__/
 *.toml#
 **/__pycache__
 /popleave/~$mplate.docx
+/dist/
