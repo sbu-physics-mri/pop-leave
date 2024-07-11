@@ -1,10 +1,11 @@
 [tool.poetry]
-name = "leave-populator"
+name = "popleave"
 version = "0.1.0"
-description = "Populates Staff Leave Forms from the Command Line"
+description = "Populates Leave Forms from the Command Line"
 authors = ["Alex Drysdale <alexander.drysdale@wales.nhs.uk>"]
 readme = "README.md"
-package-mode = false
+license = "GPL-3.0-or-later"
+include = ["popleave/template.docx"]
 
 [tool.poetry.dependencies]
 python = "^3.12"

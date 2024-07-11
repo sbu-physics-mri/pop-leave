@@ -5,6 +5,7 @@
 # Python imports
 import argparse
 import datetime
+from importlib import resources
 import json
 import os
 import platform
@@ -68,6 +69,7 @@ def init(
 
         config = {
             "name": "Samwise Gamgee",
+            "department": "The Shire",
             "remaing_days_leave": 26,
         }
 
@@ -118,19 +120,18 @@ def get_doc_dict(
     doc_dict = dict()
 
     if start_date is None:
-        start_date = datetime.date.fromisoformat(
-            _get_response(
-                'Start date (YYYY-MM-DD)', str(datetime.date.today()),
-            )
+        start_date = _get_response(
+            'Start date (YYYY-MM-DD)', str(datetime.date.today()),
         )
+    start_date = datetime.date.fromisoformat(start_date)
     
     if duration is None and end_date is None:
-        duration = datetime.timedelta(
-            days=int(_get_response('number of days', 1))
-        )
-
+        duration = int(_get_response('number of days', 1))
+    
     if duration is None:
-        duration = end_date - start_date
+        duration = datetime.data.fromisoformat(end_date) - start_date
+    else:
+        duration = datetime.timedelta(days=duration)
 
     if end_date is None:
         end_date = start_date + duration
@@ -140,6 +141,7 @@ def get_doc_dict(
 
     # Of the format (value, (table, row, col)))
     doc_dict['name'] = (config['name'], (0, 0, 0))
+    doc_dict['department'] = (config['department'], (0, 0, 1))
     doc_dict['today'] = (
         _format_date(str(datetime.date.today())),
         (0, 0, 2),
@@ -163,18 +165,30 @@ def get_doc_dict(
 
 
 def populate_file(
-        doc_dict: dict, template_file: str = 'template.docx'
+        doc_dict: dict, template_file: Optional[str] = None
 ) -> bool:
     """Populate a word template file with annual leave info
 
     Args:
         doc_dict (dict) : Dictionary of leave info.
         template_file (str, optional) : Template file to populate.
+                If None, will load the template.docx file associated with
+                the package. Defaults to None.
 
     Returns:
         return_val (bool) : True if successful, False otherwise.
     """
 
+    my_package = (
+        os.path.splitext(os.path.basename(__file__))[0]
+        if __package__ is None
+        else __package__
+    )
+    template_file = (
+        resources.files(my_package).joinpath('template.docx')
+        if template_file is None
+        else template_file
+    )
     
     doc = Document(template_file)
     for value, (t, r, c) in doc_dict.values():

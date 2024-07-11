@@ -4,9 +4,19 @@ Asks the minimum amount of questions to populate a leave request form.
 
 ## Installation
 
+# Recommended
+
+```sh
+pip install popleave
+```
+
+## Local installation
+
 1. Install [poetry](https://python-poetry.org/docs/#installation) following the official guidelines for your system.
 
-2. Install the dependencies.
+2. Clone the repository.
+
+3. Install the dependencies.
 
 ```sh
 poetry install
@@ -14,16 +24,24 @@ poetry install
 
 ## Usage
 
+### First run
+
 Run the program with
 
 ```sh
-poetry run python src/populate.py
+popleave
 ```
 
 On the first run, you will be asked for your name:
 
 ```
 Enter name (press Enter to use Samwise Gamgee): 
+```
+
+and your department:
+
+```
+Enter department (press Enter to use The Shire):
 ```
 
 and the current amount of days holiday you have remaining:
@@ -35,11 +53,13 @@ Enter remaing_days_leave (press Enter to use 26):
 If you ever need to change or correct these details, pass the `--init` flag when running the script:
 
 ```sh
-poetry run python src/populate.py --init
+popleave --init
 ```
 and you will be able to update the values accordinly.
 
-You will then be prompted for:
+### Populating a form
+
+When run you will then be prompted for:
 
 - The start date of your leave.
 - The duration of your leave.
@@ -49,7 +69,7 @@ If you'd rather, you can use commandline arguments.
 A full list of commandline arguments can be found by using the `--help` flag.
 
 ```sh
-usage: populate.py [-h] [-i] [-s START_DATE] [-e END_DATE] [-d DURATION]
+usage: popleave [-h] [-i] [-s START_DATE] [-e END_DATE] [-d DURATION]
                    [-r REASON]
 
 Populates the leave of absence form with a CLI
@@ -65,4 +85,19 @@ options:
                         Duration in days.
   -r REASON, --reason REASON
                         Reason for leave.
-```    
+```
+
+All resulting forms will be stored in the `forms/` directory in the format `INITIALS_ANNUAL_STARTDATE.docx`.
+Thus Samwise Gamgee requesting some leave starting on 1969-12-31 will result in:
+```
+forms/
+    SG_ANNUAL_31121969.docx
+```
+
+## License
+
+This project is licensed under the [GPLv3 license](LICENSE).
+
+## Contributing
+
+All contributions welcome. Submit a pull a request or create an issue to start the ball rolling.

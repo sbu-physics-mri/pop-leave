@@ -2,3 +2,6 @@
 *~
 src/__pycache__/
 /~$mplate.docx
+*.toml#
+**/__pycache__
+/popleave/~$mplate.docx
