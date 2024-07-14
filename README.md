@@ -4,13 +4,13 @@ Asks the minimum amount of questions to populate a leave request form.
 
 ## Installation
 
-# Recommended
+### Recommended
 
 ```sh
 pip install popleave
 ```
 
-## Local installation
+### Local installation
 
 1. Install [poetry](https://python-poetry.org/docs/#installation) following the official guidelines for your system.
 
