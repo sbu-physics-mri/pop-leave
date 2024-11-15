@@ -97,7 +97,7 @@ def init(
     return config
 
 
-def get_doc_dict(
+def get_doc_dict(       # noqa: PLR0913
         config: dict,
         start_date: str | datetime.date | None = None,
         duration: float | datetime.timedelta | None = None,
@@ -221,7 +221,9 @@ def populate_file(
 
     new_config = init(update_balance=int(doc_dict["balance"][0]))
 
-    print(f"You have {new_config["remaing_days_leave"]} days holiday remaining.")
+    sys.stdout.write(
+        f"You have {new_config["remaing_days_leave"]} days holiday remaining.\n",
+    )
 
     return True
 
